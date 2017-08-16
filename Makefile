@@ -13,13 +13,29 @@ start:
 	/opt/wait-for db:3306 -- $(MAKE) migrate/up
 	bash
 
+start/fail:
+	$(MAKE) install
+	$(MAKE) migrate/up
+
+success:
+	$(MAKE) docker/start conf=success.yml
+
+success/clean:
+	$(MAKE) docker/clean conf=success.yml
+
+fail:
+	$(MAKE) docker/start conf=fail.yml
+
+fail/clean:
+	$(MAKE) docker/clean conf=fail.yml
+
 docker/start:
-	$(DOCKER_COMPOSE) -f ./docker-compose.yml build
-	$(DOCKER_COMPOSE) -f ./docker-compose.yml up
+	$(DOCKER_COMPOSE) -f $(conf) build
+	$(DOCKER_COMPOSE) -f $(conf) up
 
 docker/clean:
-	$(DOCKER_COMPOSE) -f ./docker-compose.yml stop
-	$(DOCKER_COMPOSE) -f ./docker-compose.yml rm
+	$(DOCKER_COMPOSE) -f $(conf) stop
+	$(DOCKER_COMPOSE) -f $(conf) rm
 
 name=
 # gnu xargs only
