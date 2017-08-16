@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  app:
+      build: ./app
+      volumes:
+          - $PWD:/opt/app
+      command: make -C /opt/app start host=db.local
+      links:
+          - "db:db.local"
+  db:
+      image: mysql:5.6
+      environment:
+          - MYSQL_ROOT_PASSWORD=root
+          - MYSQL_DATABASE=test
+          - TZ=Asia/Tokyo
+      ports:
+          - "3306:3306"
